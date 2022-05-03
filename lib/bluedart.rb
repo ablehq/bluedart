@@ -6,6 +6,7 @@ require 'bluedart/tracking'
 require 'bluedart/pickup'
 require 'bluedart/cancel_pickup'
 require 'bluedart/cancel_awb'
+require 'bluedart/master_data'
 
 module Bluedart
 end
