@@ -1,6 +1,7 @@
 module Bluedart
   class Shipment < Base
     def initialize(details)
+      super
       @shipper = shipper_hash(details[:shipper_details])
       @consignee = consignee_hash(details[:consignee_details])
       @services = services_hash(details[:services])

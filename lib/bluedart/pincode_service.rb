@@ -4,6 +4,7 @@ module Bluedart
       @pincode = details[:pincode]
       @profile = profile_hash({api_type: 'S', version: '1.3'}, details[:creds])
       @mode = details[:mode]
+      @timeout = details[:timeout] || 300
     end
 
     def request_url
