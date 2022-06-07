@@ -1,10 +1,10 @@
 module Bluedart
   class Pickup < Base
     def initialize(details)
+      super
       @pickup_registration_request = pickup_registration_request_hash(details[:pickup_request])
       @profile = profile_hash({api_type: 'S', version: '1.3'}, details[:creds])
       @mode = details[:mode]
-      super
     end
 
     def request_url
