@@ -4,6 +4,7 @@ module Bluedart
       @cancel_pickup_request_details = cancel_pickup_request_hash(details[:cancel_pickup_request])
       @profile = profile_hash({api_type: 'S', version: '1.3'}, details[:creds])
       @mode = details[:mode]
+      super
     end
 
     def request_url

@@ -4,6 +4,10 @@ require 'nori'
 
 module Bluedart
   class Base
+    def initialize(details)
+      @timeout = details [:timeout] || 120
+    end
+
     private
 
     # input params
@@ -180,8 +184,7 @@ module Bluedart
     # Returns Hash
     def make_request(opts)
       body = request_xml(opts)
-      timeout = opts[:timeout] || 120
-      response = request(opts[:url], body.to_xml, timeout)
+      response = request(opts[:url], body.to_xml, @timeout)
       response_return(response, opts[:message])
     end
 

@@ -4,6 +4,7 @@ module Bluedart
       @awbno = details[:awbno]
       @profile = profile_hash({api_type: 'S', version: '1.3'}, details[:creds])
       @mode = details[:mode]
+      super
     end
 
      def request_url

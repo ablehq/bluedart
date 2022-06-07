@@ -10,6 +10,7 @@ module Bluedart
       @scans = details[:scans]
       @license_key = details[:creds][:license_key]
       @loginid = details[:creds][:login_id]
+      @timeout = details[:timeout] || 300
     end
 
     def self.request_url
@@ -26,7 +27,7 @@ module Bluedart
         awb: 'awb', numbers: @numbers, lickey: @license_key,
         verno: 1.3, scan: @scans
       }
-      request = HTTParty.get(Tracking.request_url, query: params, verify: false)
+      request = HTTParty.get(Tracking.request_url, query: params, verify: false, timeout: @timeout)
       response_return(request.body)
     end
 
