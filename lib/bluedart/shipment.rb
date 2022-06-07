@@ -6,6 +6,7 @@ module Bluedart
       @services = services_hash(details[:services])
       @profile = profile_hash({api_type: 'S', version: '1.3'}, details[:creds])
       @mode = details[:mode]
+      @timeout = details [:timeout] || 120
     end
 
     def request_url
@@ -21,7 +22,7 @@ module Bluedart
       # TODO: ITS A HACK NEEDS TO BE REMOVED
       # TODO: NEED TO REWRITE TO USE NAMESPACES DEFINED IN NAMESPACES FUNCTION
       params = {'Request' => {'ns4:Consignee' => @consignee, 'ns4:Services' => @services, 'ns4:Shipper' => @shipper}}
-      opts = {message: 'GenerateWayBill', wsa: wsa, params: params, extra: {'Profile' => @profile}, url: request_url}
+      opts = {message: 'GenerateWayBill', wsa: wsa, params: params, extra: {'Profile' => @profile}, url: request_url, timeout: @timeout}
       make_request(opts)
     end
 

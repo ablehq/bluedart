@@ -180,7 +180,8 @@ module Bluedart
     # Returns Hash
     def make_request(opts)
       body = request_xml(opts)
-      response = request(opts[:url], body.to_xml)
+      timeout = opts[:timeout] || 120
+      response = request(opts[:url], body.to_xml, timeout)
       response_return(response, opts[:message])
     end
 
@@ -232,8 +233,8 @@ module Bluedart
     # Fires request and returns response
     #
     # Returns Hash
-    def request(url, body)
-      res = HTTParty.post(url, body: body, headers: {'Content-Type' => 'application/soap+xml; charset="utf-8"'}, :verify => false)
+    def request(url, body, timeout)
+      res = HTTParty.post(url, body: body, headers: {'Content-Type' => 'application/soap+xml; charset="utf-8"'}, :verify => false, timeout: timeout)
       p "response is: #{res}. response body is: #{res.body} for url: #{url}"
       content = xml_hash(res.body)[:envelope][:body]
     end
