@@ -5,7 +5,7 @@ require 'nori'
 module Bluedart
   class Base
     def initialize(details)
-      @timeout = details [:timeout] || 120
+      @timeout = details[:timeout] || 120
     end
 
     private
