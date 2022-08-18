@@ -7,11 +7,11 @@ Gem::Specification.new do |spec|
   spec.name          = "bluedart"
   spec.version       = Bluedart::VERSION
   spec.authors       = ["CJ"]
-  spec.email         = ["chirag7jain@gmail.com"]
+  spec.email         = ["developer@able.do"]
 
   spec.summary       = %q{Bluedart Web Services}
   spec.description   = %q{Provides an interface to Bluedart Web Services}
-  spec.homepage      = "https://github.com/chirag7jain/bluedart"
+  spec.homepage      = "https://github.com/ablehq/bluedart"
   spec.licenses      = ["MIT"]
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }

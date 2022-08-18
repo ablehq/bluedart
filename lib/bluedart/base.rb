@@ -238,7 +238,7 @@ module Bluedart
     # Returns Hash
     def request(url, body, timeout)
       res = HTTParty.post(url, body: body, headers: {'Content-Type' => 'application/soap+xml; charset="utf-8"'}, :verify => false, timeout: timeout)
-      p "response is: #{res}. response body is: #{res.body} for url: #{url}"
+      # p "response is: #{res}. response body is: #{res.body} for url: #{url}"
       content = xml_hash(res.body)[:envelope][:body]
     end
 
