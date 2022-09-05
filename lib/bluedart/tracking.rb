@@ -14,7 +14,7 @@ module Bluedart
     end
 
     def self.request_url
-      'http://api.bluedart.com/servlet/RoutingServlet'
+      'https://api.bluedart.com/servlet/RoutingServlet'
     end
 
     def request
