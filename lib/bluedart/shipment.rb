@@ -40,6 +40,9 @@ module Bluedart
       params['CustomerPincode'] = details[:customer_pincode]
       params['CustomerTelephone'] = details[:customer_telephone]
       params['IsToPayCustomer'] = details[:isToPayCustomer]
+      if details.key?(:isReversePickup)
+        params['IsReversePickup'] = details[:isReversePickup]
+      end
       params['OriginArea'] = details[:origin_area]
       params['Sender'] = details[:sender]
       params['VendorCode'] = details[:vendor_code]
