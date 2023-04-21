@@ -43,6 +43,9 @@ module Bluedart
       if details.key?(:isReversePickup)
         params['IsReversePickup'] = details[:isReversePickup]
       end
+      if details.key?(:RegisterPickup)
+        params['RegisterPickup'] = details[:RegisterPickup]
+      end
       params['OriginArea'] = details[:origin_area]
       params['Sender'] = details[:sender]
       params['VendorCode'] = details[:vendor_code]
