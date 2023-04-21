@@ -40,9 +40,6 @@ module Bluedart
       params['CustomerPincode'] = details[:customer_pincode]
       params['CustomerTelephone'] = details[:customer_telephone]
       params['IsToPayCustomer'] = details[:isToPayCustomer]
-      if details.key?(:isReversePickup)
-        params['IsReversePickup'] = details[:isReversePickup]
-      end
       params['OriginArea'] = details[:origin_area]
       params['Sender'] = details[:sender]
       params['VendorCode'] = details[:vendor_code]
@@ -83,6 +80,9 @@ module Bluedart
       params['SpecialInstruction'] = details[:special_instruction]
       params['PDFOutputNotRequired'] = details[:p_d_f_output_not_required]
       params['PrinterLableSize'] = details[:printer_label_size]
+      if details.key?(:isReversePickup)
+        params['IsReversePickup'] = details[:isReversePickup]
+      end      
       params
     end
 
