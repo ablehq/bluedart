@@ -6,6 +6,12 @@ module Bluedart
   class Base
     def initialize(details)
       @timeout = details[:timeout] || 120
+      @debug = details[:debug] || false
+      @comms_mode = details[:comms_mode] || "xml"
+    end
+
+    def is_comms_mode_xml?
+      @comms_mode == "xml"
     end
 
     private
@@ -19,10 +25,17 @@ module Bluedart
     # Return Hash
     def profile_hash(details, creds)
       params = {}
-      params[:api_type] = details[:api_type]
-      params[:license_key] = creds[:license_key]
-      params[:login_id] = creds[:login_id]
-      params[:version] = details[:version]
+      if is_comms_mode_xml?
+        params[:api_type] = details[:api_type]
+        params[:license_key] = creds[:license_key]
+        params[:login_id] = creds[:login_id]
+        params[:version] = details[:version]
+      else
+        params[:Api_type] = details[:api_type]
+        params[:LicenceKey] = creds[:license_key]
+        params[:LoginID] = creds[:login_id]
+        params[:Version] = '1.8'
+      end
       params
     end
 
@@ -176,6 +189,10 @@ module Bluedart
       end
     end
 
+    def request_json(opts)
+      {}.merge(opts[:params] || {}).merge(opts[:extra] || {})
+    end
+
     # input params
     # opts - Hash
     #
@@ -184,8 +201,15 @@ module Bluedart
     # Returns Hash
     def make_request(opts)
       body = request_xml(opts)
-      response = request(opts[:url], body.to_xml, @timeout)
+      response = request(opts[:url], body.to_xml)
       response_return(response, opts[:message])
+    end
+
+    def make_request_json(opts)
+      body = request_json(opts)
+      body = body.except(:Profile).deep_transform_keys{ |key| key.to_s.camelize(:upper) }.merge(Profile: body[:Profile])
+      response = run_json_request(opts[:url], body)
+      response_return_json(response, opts[:message])
     end
 
     # input params
@@ -202,6 +226,23 @@ module Bluedart
         response_hash[:error_text] = response[:error_message]
       else
         content = required_content(message, response)
+        if content[:is_error] || content[:error]
+          response_hash[:error] = true
+          response_hash[:error_text] = content[:error_message] || content[:status] || content[:error_text]
+        else
+          response_hash[:content] = content
+        end
+      end
+      response_hash
+    end
+
+    def response_return_json(response, message)
+      response_hash = {error: false, error_text: ''}
+      if response[:error]
+        response_hash[:error] = true
+        response_hash[:error_text] = response[:error_message]
+      else
+        content = required_content_json(message, response)
         if content[:is_error] || content[:error]
           response_hash[:error] = true
           response_hash[:error_text] = content[:error_message] || content[:status] || content[:error_text]
@@ -229,6 +270,16 @@ module Bluedart
       end
     end
 
+    def required_content_json(prefix, content)
+      if content[:fault].nil?
+        prefix_s = prefix.snakecase
+        key = prefix_s + '_result'
+        return content[key]
+      else
+        return {error: true, error_text: content[:fault]}
+      end
+    end
+
     # input params
     # url - String
     # body - String
@@ -236,10 +287,32 @@ module Bluedart
     # Fires request and returns response
     #
     # Returns Hash
-    def request(url, body, timeout)
-      res = HTTParty.post(url, body: body, headers: {'Content-Type' => 'application/soap+xml; charset="utf-8"'}, :verify => false, timeout: timeout)
-      # p "response is: #{res}. response body is: #{res.body} for url: #{url}"
+    def request(url, body)
+      opts = {
+        body: body, 
+        headers: {'Content-Type': 'application/soap+xml; charset="utf-8"'},
+        verify: false, 
+        timeout: @timeout
+      }
+      if @debug
+        opts.merge!(debug_output: $stdout)
+      end
+      res = HTTParty.post(url, opts)
       content = xml_hash(res.body)[:envelope][:body]
+    end
+
+    def run_json_request(url, body)
+      opts = {
+        body: body.to_json, 
+        headers: {'Content-Type': 'application/json; charset="utf-8"'},
+        verify: false, 
+        timeout: @timeout
+      }
+      if @debug
+        opts.merge!(debug_output: $stdout)
+      end
+      res = HTTParty.post(url, opts)
+      JSON.parse(res.body).deep_transform_keys{ |key| key.to_s.underscore }
     end
 
     # input params
