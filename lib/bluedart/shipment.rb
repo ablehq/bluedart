@@ -14,7 +14,21 @@ module Bluedart
         'https://netconnect.bluedart.com/Ver1.10/ShippingAPI/WayBill/WayBillGeneration.svc'
       else
         'https://netconnect.bluedart.com/Ver1.10/Demo/ShippingAPI/WayBill/WayBillGeneration.svc'
+      end      
+    end
+
+    def request_url_json
+      if @mode == 'prod'
+        'https://netconnect.bluedart.com/Ver1.10/ShippingAPI/WayBill/WayBillGeneration.svc/rest/GenerateWayBill'
+      else
+        'https://netconnect.bluedart.com/API-QA/Ver1.10/Demo/ShippingAPI/WayBill/WayBillGeneration.svc/rest/GenerateWayBill'
       end
+    end
+
+    def response_json
+      params = {Request: {Consignee: @consignee, Services: @services, Shipper:@shipper}}
+      opts = {message: 'GenerateWayBill', params: params, extra: {Profile: @profile}, url: request_url_json}
+      make_request_json(opts)
     end
 
     def response
@@ -70,16 +84,16 @@ module Bluedart
       params['Dimensions'] = dimensions_hash(details[:dimensions])
       params['InvoiceNo'] = details[:invoice_no]
       params['PackType'] = details[:pack_type]
-      params['PickupDate'] = details[:pickup_date]
+      params['PickupDate'] = transform_pickup_date(details[:pickup_date], details[:pickup_time])
       params['PickupTime'] = details[:pickup_time]
       params['PieceCount'] = details[:piece_count]
       params['ProductCode'] = details[:product_code]
       params['RegisterPickup'] = details[:register_pickup]
-      params['ProductType'] = details[:product_type]
+      params['ProductType'] = transform_product_type(details[:product_type])
       params['SubProductCode'] = details[:sub_product_code]
       params['SpecialInstruction'] = details[:special_instruction]
       params['PDFOutputNotRequired'] = details[:p_d_f_output_not_required]
-      params['PrinterLableSize'] = details[:printer_label_size]
+      params['PrinterLableSize'] = details[:printer_label_size] if details[:printer_label_size].present?
       if details.key?(:isReversePickup)
         params['IsReversePickup'] = details[:isReversePickup]
       end      
@@ -87,17 +101,42 @@ module Bluedart
     end
 
     def dimensions_hash(details)
-      params = []
-      details.each do |d|
-        params << {'Dimension' => {'Breadth' => d[:breadth], 'Height' => d[:height], 'Length' => d[:length], 'Count' => d[:count]} }
+      if is_comms_mode_xml?
+        params = []
+        details.each do |d|
+          params << {'Dimension' => {'Breadth' => d[:breadth], 'Height' => d[:height], 'Length' => d[:length], 'Count' => d[:count]} }
+        end
+        params
+      else
+        details
       end
-      params
     end
 
     def commodites_hash(details)
       params = {}
       details.each_with_index {|d, i| params["CommodityDetail#{i+1}"] = d}
       params
+    end
+
+    def transform_pickup_date(pickup_date, pickup_time)
+      if is_comms_mode_xml?
+        pickup_date
+      else
+        date_str = (DateTime.strptime("#{pickup_date} #{pickup_time} +05:30", "%Y-%m-%d %H%M %Z").to_f * 1000).to_i
+        "/Date(#{date_str})/"
+      end
+    end
+
+    def transform_product_type(product_type)
+      if is_comms_mode_xml?
+        product_type
+      else
+        if product_type == "Dutiables"
+          1
+        else
+          raise "Unknowun product type #{product_type}"
+        end
+      end
     end
   end
 end
