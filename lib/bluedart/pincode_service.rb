@@ -1,6 +1,7 @@
 module Bluedart
   class PincodeService < Base
     def initialize(details)
+      super
       @pincode = details[:pincode]
       @profile = profile_hash({api_type: 'S', version: '1.3'}, details[:creds])
       @mode = details[:mode]
