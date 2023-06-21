@@ -149,7 +149,7 @@ describe "Generate shipment in json communication mode" do
            }).
          to_return(status: 200, body: response_body.to_json, headers: {'Content-Type': 'application/json; charset="utf-8"'})
     b = Bluedart::Shipment.new(details)
-    resp = b.response_json.deep_symbolize_keys
+    resp = b.response_json
     expect(resp[:content][:awb_no]).to eq("81201393232")
   end
 end

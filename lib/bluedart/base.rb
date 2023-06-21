@@ -274,7 +274,7 @@ module Bluedart
       if content[:fault].nil?
         prefix_s = prefix.snakecase
         key = prefix_s + '_result'
-        return content[key]
+        return content[key.to_sym]
       else
         return {error: true, error_text: content[:fault]}
       end
@@ -312,7 +312,7 @@ module Bluedart
         opts.merge!(debug_output: $stdout)
       end
       res = HTTParty.post(url, opts)
-      JSON.parse(res.body).deep_transform_keys{ |key| key.to_s.underscore }
+      JSON.parse(res.body).deep_transform_keys{ |key| key.to_s.underscore }.deep_symbolize_keys
     end
 
     # input params
