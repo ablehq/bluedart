@@ -84,7 +84,7 @@ module Bluedart
       params['Dimensions'] = dimensions_hash(details[:dimensions])
       params['InvoiceNo'] = details[:invoice_no]
       params['PackType'] = details[:pack_type]
-      params['PickupDate'] = transform_pickup_date(details[:pickup_date])
+      params['PickupDate'] = transform_pickup_date(details[:pickup_date], details[:pickup_time])
       params['PickupTime'] = details[:pickup_time]
       params['PieceCount'] = details[:piece_count]
       params['ProductCode'] = details[:product_code]
@@ -118,11 +118,11 @@ module Bluedart
       params
     end
 
-    def transform_pickup_date(pickup_date)
+    def transform_pickup_date(pickup_date, pickup_time)
       if is_comms_mode_xml?
         pickup_date
       else
-        date_str = (DateTime.strptime("#{pickup_date} +05:30", "%Y-%m-%d %Z").to_f * 1000).to_i
+        date_str = (DateTime.strptime("#{pickup_date} #{pickup_time} +05:30", "%Y-%m-%d %H%M %Z").to_f * 1000).to_i
         "/Date(#{date_str})/"
       end
     end
