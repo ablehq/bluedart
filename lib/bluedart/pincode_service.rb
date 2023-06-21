@@ -18,7 +18,7 @@ module Bluedart
 
     def request_url_json
       if @mode == 'prod'
-        'https://netconnect.bluedart.com/Ver1.10/Demo/ShippingAPI/Finder/ServiceFinderQuery.svc/rest/GetServicesforPincode'
+        'https://netconnect.bluedart.com/Ver1.10/ShippingAPI/Finder/ServiceFinderQuery.svc/rest/GetServicesforPincode'
       else
         'https://netconnect.bluedart.com/API-QA/Ver1.10/Demo/ShippingAPI/Finder/ServiceFinderQuery.svc/rest/GetServicesforPincode'
       end
