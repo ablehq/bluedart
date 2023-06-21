@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Generate shipment in json communication mode" do
-  it 'should generate label using rest communication' do
+  it 'should generate awb' do
     details ={
       shipper_details: {
         customer_code: "3212",
