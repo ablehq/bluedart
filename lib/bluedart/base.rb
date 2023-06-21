@@ -207,7 +207,18 @@ module Bluedart
 
     def make_request_json(opts)
       body = request_json(opts)
-      body = body.except(:Profile).deep_transform_keys{ |key| key.to_s.camelize(:upper) }.merge(Profile: body[:Profile])
+      transformed = body.except(:Profile).except(:profile).deep_transform_keys do |key|
+        if key == "pinCode".to_sym
+          key
+        else
+          key.to_s.camelize(:upper)
+        end
+      end
+      if body.key?(:Profile)
+        body = transformed.merge(Profile: body[:Profile])
+      elsif body.key?(:profile)
+        body = transformed.merge(profile: body[:profile])
+      end
       response = run_json_request(opts[:url], body)
       response_return_json(response, opts[:message])
     end

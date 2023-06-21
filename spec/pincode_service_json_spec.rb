@@ -112,7 +112,7 @@ describe "Pincode service json communication mode" do
     }
     stub_request(:post, "https://netconnect.bluedart.com/API-QA/Ver1.10/Demo/ShippingAPI/Finder/ServiceFinderQuery.svc/rest/GetServicesforPincode").
          with(
-           body: "{\"Request\":{\"PinCode\":\"500062\"},\"Profile\":{\"Api_type\":\"S\",\"LicenceKey\":\"lk\",\"LoginID\":\"ld\",\"Version\":\"1.8\"}}",
+           body: "{\"pinCode\":\"500062\",\"profile\":{\"Api_type\":\"S\",\"LicenceKey\":\"lk\",\"LoginID\":\"ld\",\"Version\":\"1.8\"}}",
            headers: {
        	  'Accept'=>'*/*',
        	  'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',

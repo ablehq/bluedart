@@ -31,8 +31,8 @@ module Bluedart
     end
 
     def response_json
-      params = {Request: {pinCode: @pincode}}
-      opts = {message: 'GetServicesforPincode', params: params, extra: {Profile: @profile}, url: request_url_json}
+      params = {pinCode: @pincode}
+      opts = {message: 'GetServicesforPincode', params: params, extra: {profile: @profile}, url: request_url_json}
       make_request_json(opts)
     end
 
